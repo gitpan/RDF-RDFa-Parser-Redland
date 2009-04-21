@@ -5,7 +5,7 @@ use strict;
 use RDF::Redland;
 use RDF::RDFa::Parser '0.11';
 our @ISA = qw(RDF::RDFa::Parser);
-our $VERSION = '0.01';
+our $VERSION = '0.02';
 
 sub redland
 {
@@ -43,6 +43,12 @@ sub redland
 						$object->{'value'},
 						$object->{'datatype'},
 						$object->{'lang'});
+
+					$O = RDF::Redland::LiteralNode->new(
+						$object->{'value'},
+						undef,
+						$object->{'lang'})
+						unless $O;
 				}
 				else
 				{
