@@ -1,0 +1,25 @@
+RDF-RDFa-Parser-Redland version 0.01
+====================================
+
+Adds RDF::Redland::Model support for RDF::RDFa::Parser.
+
+INSTALLATION
+
+To install this module type the following:
+
+   perl Makefile.PL
+   make
+   make test
+   make install
+
+DEPENDENCIES
+
+This module requires these other modules and libraries:
+
+   RDF::Redland
+   RDF::RDFa::Parser
+
+COPYRIGHT AND LICENCE
+
+See the POD documentation for the module.
+

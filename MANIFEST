@@ -1,0 +1,11 @@
+Changes
+Makefile.PL
+MANIFEST
+README
+lib/RDF/RDFa/Parser/Redland.pm
+t/xmlliteral.t
+t/redland.t
+t/general.t
+t/named-graphs.t
+
+META.yml                                 Module meta-data (added by MakeMaker)
