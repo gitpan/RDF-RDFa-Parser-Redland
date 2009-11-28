@@ -1,68 +1,176 @@
 package RDF::RDFa::Parser::Redland;
 
-use 5.010000;
+use 5.008001;
 use strict;
 use RDF::Redland;
-use RDF::RDFa::Parser '0.11';
+use RDF::RDFa::Parser '0.21';
 our @ISA = qw(RDF::RDFa::Parser);
-our $VERSION = '0.02';
+our $VERSION = '0.21';
 
-sub redland
+sub new
 {
-	my $self  = shift;
+	my $class = shift;
+	my $xhtml = shift;
+	my $base  = shift;
+	my $opts  = shift;
 	my $model = shift;
 	
-	unless ($model)
+	my $self  = $class->SUPER::new($xhtml, $base, $opts);
+	
+	if (!UNIVERSAL::isa($model, 'RDF::Redland::Model'))
 	{
-		my $storage = RDF::Redland::Storage->new("hashes", "rdfa", "new='yes',hash-type='memory'");
-		$model = RDF::Redland::Model->new($storage);
+		my $store = RDF::Redland::Storage->new(
+			"hashes", "test", "new='yes',hash-type='memory',contexts='yes'");
+		$model = RDF::Redland::Model->new($store, "");
 	}
 	
-	my $graph = $self->graph;
+	$self->{'redland'} = $model;
+	$self->SUPER::set_callbacks(
+		\&redland_triple_resource,	\&redland_triple_literal);
+
+	return $self;
+}
+
+sub set_callbacks
+{
+	my $this = shift;
+
+	for (my $n=0 ; $n<2 ; $n++)
+	{
+		if (lc($_[$n]) eq 'print')
+			{ $this->{'redland_sub'}->[$n] = ($n==0 ? \&RDF::RDFa::Parser::_print0 : \&RDF::RDFa::Parser::_print1); }
+		elsif ('CODE' eq ref $_[$n])
+			{ $this->{'redland_sub'}->[$n] = $_[$n]; }
+		else
+			{ $this->{'redland_sub'}->[$n] = undef; }
+	}
+}
+
+sub redland_triple_common
+{
+	my $self      = shift;
+	my $element   = shift;  # A reference to the XML::LibXML element being parsed
+	my $subject   = shift;  # Subject URI or bnode
+	my $predicate = shift;  # Predicate URI
+	my $ro        = shift;  # Redland Object
+	my $graph     = shift;  # Graph URI or bnode (if named graphs feature is enabled)
 	
-	return $model
-		unless $graph;
+	my ($rs, $rp, $rg);
+	
+	$rs = ($subject =~ /^_:(.*)$/) 
+		? RDF::Redland::BlankNode->new($1)
+		: RDF::Redland::URINode->new($subject);
 		
-	foreach my $subject (keys %$graph)
+	$rp = ($predicate =~ /^_:(.*)$/) 
+		? RDF::Redland::BlankNode->new($1)
+		: RDF::Redland::URINode->new($predicate);
+	
+	my $rst = RDF::Redland::Statement->new($rs, $rp, $ro);
+	
+	if ($graph)
 	{
-		my $S = ($subject =~ /^_:(.+)$/) 
-		      ? RDF::Redland::BlankNode->new($1)
-		      : RDF::Redland::URINode->new($subject);
+		$rg = ($graph =~ /^_:(.*)$/) 
+			? RDF::Redland::BlankNode->new($1)
+			: RDF::Redland::URINode->new($graph);
+		$self->{'redland'}->add_statement($rst, $rg);
+	}
+	else
+	{
+		$self->{'redland'}->add_statement($rst);
+	}
 	
-		foreach my $predicate (keys %{ $graph->{$subject} })
-		{
-			my $P = RDF::Redland::URINode->new($predicate);
-	
-			foreach my $object (@{ $graph->{$subject}->{$predicate} })
-			{
-				my $O;
-				
-				if ($object->{'type'} eq 'literal')
-				{
-					$O = RDF::Redland::LiteralNode->new(
-						$object->{'value'},
-						$object->{'datatype'},
-						$object->{'lang'});
+	return 1; # Suppress triple from RDF::Trine::Model.
+}
 
-					$O = RDF::Redland::LiteralNode->new(
-						$object->{'value'},
-						undef,
-						$object->{'lang'})
-						unless $O;
-				}
-				else
-				{
-					$O = ($object->{'value'} =~ /^_:(.+)$/) 
-					      ? RDF::Redland::BlankNode->new($1)
-					      : RDF::Redland::URINode->new($object->{'value'});
-				}
-				
-				$model->add($S, $P, $O);
-			}
-		}
+sub redland_triple_resource
+{
+	my $self      = shift;
+	
+	# Callback subroutine
+	my $suppress_triple = 0;
+	$suppress_triple = $self->{'redland_sub'}->[0]($self, @_)
+		if ($self->{'redland_sub'}->[0]);
+	return 1 if $suppress_triple;
+	
+	my $element   = shift;  # A reference to the XML::LibXML element being parsed
+	my $subject   = shift;  # Subject URI or bnode
+	my $predicate = shift;  # Predicate URI
+	my $object    = shift;  # Resource URI or bnode
+	my $graph     = shift;  # Graph URI or bnode (if named graphs feature is enabled)
+
+	my $ro = ($object =~ /^_:(.*)$/) 
+		? RDF::Redland::BlankNode->new($1)
+		: RDF::Redland::URINode->new($object);
+
+	return $self->redland_triple_common($element, $subject, $predicate, $ro, $graph);
+}
+
+sub redland_triple_literal
+{
+	my $self      = shift;
+
+	# Callback subroutine
+	my $suppress_triple = 0;
+	$suppress_triple = $self->{'redland_sub'}->[1]($self, @_)
+		if ($self->{'redland_sub'}->[1]);
+	return 1 if $suppress_triple;
+	
+	my $element   = shift;  # A reference to the XML::LibXML element being parsed
+	my $subject   = shift;  # Subject URI or bnode
+	my $predicate = shift;  # Predicate URI
+	my $object    = shift;  # Resource Literal
+	my $datatype  = shift;  # Datatype URI (possibly undef or '')
+	my $language  = shift;  # Language (possibly undef or '')
+	my $graph     = shift;  # Graph URI or bnode (if named graphs feature is enabled)
+
+	my $ro;
+	if ($datatype)
+	{
+		$ro = RDF::Redland::LiteralNode->new($object, $datatype, undef);
+	}
+	else
+	{
+		$ro = RDF::Redland::LiteralNode->new($object, undef, $language);
 	}
 
+	return $self->redland_triple_common($element, $subject, $predicate, $ro, $graph);
+}
+
+sub graph
+{
+	my $self  = shift;
+	my $graph = shift;
+	
+	return $self->{'redland'}
+		unless defined $graph;
+
+	my $rg = ($graph =~ /^_:(.*)$/) 
+			? RDF::Redland::BlankNode->new($1)
+			: RDF::Redland::URINode->new($graph);
+	my $store  = RDF::Redland::Storage->new(
+		"hashes", "test", "new='yes',hash-type='memory'");
+	my $model  = RDF::Redland::Model->new($store, '');
+	my $sttmpl = RDF::Redland::Statement->new(undef, undef, undef);
+	my $stream = $self->{'redland'}->find_statements($sttmpl, $rg);
+	$model->add_statements($stream);
 	return $model;
+}
+
+sub graphs
+{
+	my $self = shift;
+	
+	my $rv = {};
+	my @contexts = $self->{'redland'}->contexts;
+	foreach my $c (@contexts)
+	{		
+		my $g = $c->is_resource ?
+			$c->uri->as_string :
+			('_:'.$c->blank_identifier) ;
+		$rv->{$g} = $self->graph($g);
+	}
+	
+	return $rv;
 }
 
 1;
@@ -77,63 +185,48 @@ RDF::RDFa::Parser::Redland - Parses RDFa into a RDF::Redland::Model.
   use LWP::Simple qw(get);
   use RDF::RDFa::Parser::Redland;
   
-  my $uri     = 'http://example.com/rdfa-enabled-page.xhtml';
-  my $parser  = RDF::RDFa::Parser::Redland(get($uri), $uri);
-  
+  my $uri    = 'http://example.com/rdfa-enabled-page.xhtml';
+  my $parser = RDF::RDFa::Parser::Redland->new(get($uri), $uri);
   $parser->consume;
-  my $model   = $parser->redland;
+  my $model  = $parser->graph;
   
 =head1 DESCRIPTION
 
 This module extends RDF::RDFa::Parser to be able to output an
 RDF::Redland::Model.
 
-The C<redland> method will return a Redland model equivalent to the
-C<graph> method that the usual RDF::RDFa::Parser has. (Indeed, the
-C<graph> method is available in this module too.)
+The C<graph> method will return a Redland model instead of the
+RDF::Trine::Model that C<RDF::RDFa::Parser::graph> returns.
 
-C<redland> can be passed a single optional parameter, consisting
-of an existing Redland model which triples will be added to. If this
-parameter is missing, then a new in-memory model will be created.
+Other than that it should have an identical API to RDF::RDFa::Parser.
+
+=head1 BUGS
+
+RDF::RDFa::Parser::Redland 0.21 passes all approved tests in the W3C's
+XHTML+RDFa test suite.
+
+There seem to be one or two problems using the named graphs feature,
+but I've not had a chance to discover if the problems are in this package
+or in RDF::Redland (probably the former). The named graphs feature is
+only useful in a very small set of cases, and is disabled by default.
+
+Please report any bugs to L<http://rt.cpan.org/>.
 
 =head1 SEE ALSO
 
-RDF::RDFa::Parser, RDF::RDFa::Parser::Trine, RDF::Redland.
+L<RDF::RDFa::Parser>, L<RDF::Redland>.
+
+L<http://www.perlrdf.org/>.
 
 =head1 AUTHOR
 
-Toby Inkster, E<lt>mail@tobyinkster.co.ukE<gt>
+Toby Inkster, E<lt>tobyink@cpan.orgE<gt>
 
 =head1 COPYRIGHT AND LICENSE
 
- Copyright 2008, 2009 Toby Inkster
+Copyright 2008, 2009 Toby Inkster
 
- This file is dual licensed under:
- The Artistic License
- GNU General Public License 3.0
-
- You may choose which of those two licences you are going to honour the
- terms of, but you cannot pick and choose the parts which you like of
- each. You must fulfil the licensing requirements of at least one of the
- two licenses.
-
- The Artistic License
- <http://www.perl.com/language/misc/Artistic.html>
-
- GNU General Public License 3.0
- <http://www.gnu.org/licenses/gpl-3.0.html>
-
- This program is free software: you can redistribute it and/or modify
- it under the terms of the GNU General Public License as published by
- the Free Software Foundation, either version 3 of the License, or
- (at your option) any later version.
-
- This program is distributed in the hope that it will be useful,
- but WITHOUT ANY WARRANTY; without even the implied warranty of
- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- GNU General Public License for more details.
-
- You should have received a copy of the GNU General Public License
- along with this program. If not, see <http://www.gnu.org/licenses/>.
+This library is free software; you can redistribute it and/or modify
+it under the same terms as Perl itself.
 
 =cut

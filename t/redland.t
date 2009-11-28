@@ -1,4 +1,4 @@
-use Test::More tests => 5;
+use Test::More tests => 4;
 BEGIN { use_ok('RDF::RDFa::Parser::Redland') };
 
 use RDF::Redland;
@@ -16,11 +16,9 @@ my $xhtml = <<EOF;
 EOF
 $parser = RDF::RDFa::Parser::Redland->new($xhtml, 'http://example.com/einstein');
 
-ok(lc($parser->dom->documentElement->tagName) eq 'html', 'DOM Tree returned OK.');
-
 ok($parser->consume, "Parse OK");
 
-ok(my $model = $parser->redland, "Model retrieved");
+ok(my $model = $parser->graph, "Model retrieved");
 
 my $q  = 'ASK WHERE { <http://example.com/einstein#topic> a <http://xmlns.com/foaf/0.1/Person> }';
 my $qr = $model->query_execute(RDF::Redland::Query->new($q, undef, undef, 'sparql'));
