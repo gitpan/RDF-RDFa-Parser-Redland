@@ -5,7 +5,7 @@ use strict;
 use RDF::Redland;
 use RDF::RDFa::Parser '0.21';
 our @ISA = qw(RDF::RDFa::Parser);
-our $VERSION = '0.21';
+our $VERSION = '0.22';
 
 sub new
 {
@@ -179,6 +179,10 @@ __END__
 =head1 NAME
 
 RDF::RDFa::Parser::Redland - Parses RDFa into a RDF::Redland::Model.
+
+=head1 VERSION
+
+0.22
 
 =head1 SYNOPSIS
 
