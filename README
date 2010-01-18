@@ -1,25 +1,49 @@
-RDF-RDFa-Parser-Redland version 0.01
-====================================
+NAME
+    RDF::RDFa::Parser::Redland - Parses RDFa into a RDF::Redland::Model.
 
-Adds RDF::Redland::Model support for RDF::RDFa::Parser.
+VERSION
+    0.30
 
-INSTALLATION
+SYNOPSIS
+      use LWP::Simple qw(get);
+      use RDF::RDFa::Parser::Redland;
+  
+      my $uri    = 'http://example.com/rdfa-enabled-page.xhtml';
+      my $parser = RDF::RDFa::Parser::Redland->new(get($uri), $uri);
+      $parser->consume;
+      my $model  = $parser->graph;
 
-To install this module type the following:
+DESCRIPTION
+    This module extends RDF::RDFa::Parser to be able to output an
+    RDF::Redland::Model.
 
-   perl Makefile.PL
-   make
-   make test
-   make install
+    The "graph" method will return a Redland model instead of the
+    RDF::Trine::Model that "RDF::RDFa::Parser::graph" returns.
 
-DEPENDENCIES
+    Other than that it should have an identical API to RDF::RDFa::Parser.
 
-This module requires these other modules and libraries:
+BUGS
+    RDF::RDFa::Parser::Redland 0.21 passes all approved tests in the W3C's
+    XHTML+RDFa test suite.
 
-   RDF::Redland
-   RDF::RDFa::Parser
+    There seem to be one or two problems using the named graphs feature, but
+    I've not had a chance to discover if the problems are in this package or
+    in RDF::Redland (probably the former). The named graphs feature is only
+    useful in a very small set of cases, and is disabled by default.
 
-COPYRIGHT AND LICENCE
+    Please report any bugs to <http://rt.cpan.org/>.
 
-See the POD documentation for the module.
+SEE ALSO
+    RDF::RDFa::Parser, RDF::Redland.
+
+    <http://www.perlrdf.org/>.
+
+AUTHOR
+    Toby Inkster, <tobyink@cpan.org>
+
+COPYRIGHT AND LICENSE
+    Copyright 2008-2010 Toby Inkster
+
+    This library is free software; you can redistribute it and/or modify it
+    under the same terms as Perl itself.
 

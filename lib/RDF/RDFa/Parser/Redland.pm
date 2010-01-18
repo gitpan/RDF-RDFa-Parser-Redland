@@ -3,9 +3,9 @@ package RDF::RDFa::Parser::Redland;
 use 5.008001;
 use strict;
 use RDF::Redland;
-use RDF::RDFa::Parser '0.21';
+use RDF::RDFa::Parser '0.30';
 our @ISA = qw(RDF::RDFa::Parser);
-our $VERSION = '0.22';
+our $VERSION = '0.30';
 
 sub new
 {
@@ -25,8 +25,10 @@ sub new
 	}
 	
 	$self->{'redland'} = $model;
-	$self->SUPER::set_callbacks(
-		\&redland_triple_resource,	\&redland_triple_literal);
+	$self->SUPER::set_callbacks({
+		pretriple_resource => \&redland_triple_resource ,	
+		pretriple_literal  => &redland_triple_literal ,
+		});
 
 	return $self;
 }
@@ -35,15 +37,32 @@ sub set_callbacks
 {
 	my $this = shift;
 
-	for (my $n=0 ; $n<2 ; $n++)
+	if ('HASH' eq ref $_[0])
 	{
-		if (lc($_[$n]) eq 'print')
-			{ $this->{'redland_sub'}->[$n] = ($n==0 ? \&RDF::RDFa::Parser::_print0 : \&RDF::RDFa::Parser::_print1); }
-		elsif ('CODE' eq ref $_[$n])
-			{ $this->{'redland_sub'}->[$n] = $_[$n]; }
-		else
-			{ $this->{'redland_sub'}->[$n] = undef; }
+		$this->{'redland_sub'} = $_[0];
+		$this->{'redland_sub'}->{'pretriple_resource'} = \&_print0
+			if lc $this->{'redland_sub'}->{'pretriple_resource'}  eq 'print';
+		$this->{'redland_sub'}->{'pretriple_literal'} = \&_print1
+			if lc $this->{'redland_sub'}->{'pretriple_literal'}  eq 'print';
 	}
+	else
+	{
+		if (lc($_[0]) eq 'print')
+			{ $this->{'redland_sub'}->{'pretriple_resource'} = \&_print0; }
+		elsif ('CODE' eq ref $_[0])
+			{ $this->{'redland_sub'}->{'pretriple_resource'} = $_[0]; }
+		else
+			{ $this->{'redland_sub'}->{'pretriple_resource'} = undef; }
+
+		if (lc($_[1]) eq 'print')
+			{ $this->{'redland_sub'}->{'pretriple_literal'} = \&_print1; }
+		elsif ('CODE' eq ref $_[1])
+			{ $this->{'redland_sub'}->{'pretriple_literal'} = $_[1]; }
+		else
+			{ $this->{'redland_sub'}->{'pretriple_literal'} = undef; }
+	}
+	
+	return $this;
 }
 
 sub redland_triple_common
@@ -66,7 +85,12 @@ sub redland_triple_common
 		: RDF::Redland::URINode->new($predicate);
 	
 	my $rst = RDF::Redland::Statement->new($rs, $rp, $ro);
-	
+
+	my $suppress_triple = 0;
+	$suppress_triple = $self->{'redland_sub'}->{'ontriple'}($self, $element, $rst)
+		if ($self->{'redland_sub'}->{'ontriple'});
+	return if $suppress_triple;
+
 	if ($graph)
 	{
 		$rg = ($graph =~ /^_:(.*)$/) 
@@ -78,7 +102,7 @@ sub redland_triple_common
 	{
 		$self->{'redland'}->add_statement($rst);
 	}
-	
+		
 	return 1; # Suppress triple from RDF::Trine::Model.
 }
 
@@ -88,9 +112,9 @@ sub redland_triple_resource
 	
 	# Callback subroutine
 	my $suppress_triple = 0;
-	$suppress_triple = $self->{'redland_sub'}->[0]($self, @_)
-		if ($self->{'redland_sub'}->[0]);
-	return 1 if $suppress_triple;
+	$suppress_triple = $self->{'redland_sub'}->{'pretriple_resource'}($self, @_)
+		if defined $self->{'redland_sub'}->{'pretriple_resource'};
+	return if $suppress_triple;
 	
 	my $element   = shift;  # A reference to the XML::LibXML element being parsed
 	my $subject   = shift;  # Subject URI or bnode
@@ -111,9 +135,9 @@ sub redland_triple_literal
 
 	# Callback subroutine
 	my $suppress_triple = 0;
-	$suppress_triple = $self->{'redland_sub'}->[1]($self, @_)
-		if ($self->{'redland_sub'}->[1]);
-	return 1 if $suppress_triple;
+	$suppress_triple = $self->{'redland_sub'}->{'pretriple_literal'}($self, @_)
+		if defined $self->{'redland_sub'}->{'pretriple_literal'};
+	return if $suppress_triple;
 	
 	my $element   = shift;  # A reference to the XML::LibXML element being parsed
 	my $subject   = shift;  # Subject URI or bnode
@@ -182,7 +206,7 @@ RDF::RDFa::Parser::Redland - Parses RDFa into a RDF::Redland::Model.
 
 =head1 VERSION
 
-0.22
+0.30
 
 =head1 SYNOPSIS
 
@@ -228,7 +252,7 @@ Toby Inkster, E<lt>tobyink@cpan.orgE<gt>
 
 =head1 COPYRIGHT AND LICENSE
 
-Copyright 2008, 2009 Toby Inkster
+Copyright 2008-2010 Toby Inkster
 
 This library is free software; you can redistribute it and/or modify
 it under the same terms as Perl itself.

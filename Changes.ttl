@@ -1,0 +1,107 @@
+#############################################################
+
+@prefix :        <http://usefulinc.com/ns/doap#> .
+@prefix dcs:     <http://ontologi.es/doap-changeset#> .
+@prefix dc:      <http://purl.org/dc/terms/> .
+@prefix foaf:    <http://xmlns.com/foaf/0.1/> .
+@prefix my:      <http://search.cpan.org/dist/RDF-RDFa-Parser-Redland/#> .
+@prefix rdfs:    <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix toby:    <http://tobyinkster.co.uk/#> .
+@prefix xsd:     <http://www.w3.org/2001/XMLSchema#> .
+
+#############################################################
+
+<>
+
+	dc:title         "Changes for RDF::RDFa::Parser::Redland" ;
+	dc:description   "Revision history for Perl extension RDF::RDFa::Parser::Redland."@en ;
+	dc:subject       my:project ;
+	dc:creator       toby:i .
+
+#############################################################
+
+my:v_0_01
+
+	a               :Version ;
+	dc:issued       "2009-04-21"^^xsd:date ;
+	:revision       "0.01"^^xsd:string ;
+	:file-release   <http://backpan.perl.org/authors/id/T/TO/TOBYINK/RDF-RDFa-Parser-Redland-0.01.tar.gz> ;
+	rdfs:label      "Original version"@en .
+
+my:v_0_02
+
+	a               :Version ;
+	dc:issued       "2009-04-21"^^xsd:date ;
+	:revision       "0.02"^^xsd:string ;
+	:file-release   <http://backpan.perl.org/authors/id/T/TO/TOBYINK/RDF-RDFa-Parser-Redland-0.02.tar.gz> ;
+	dcs:changeset [
+		dcs:versus my:v_0_01 ;
+		dcs:item
+			[ rdfs:label "Less fussy with datatypes."@en ]
+		] .
+
+my:v_0_21
+
+	a               :Version ;
+	dc:issued       "2009-11-28"^^xsd:date ;
+	:revision       "0.21"^^xsd:string ;
+	:file-release   <http://backpan.perl.org/authors/id/T/TO/TOBYINK/RDF-RDFa-Parser-Redland-0.21.tar.gz> ;
+	dcs:changeset [
+		dcs:versus my:v_0_02 ;
+		dcs:item
+			[ rdfs:label "Sync code against RDF::RDFa::Parser."@en ; a dcs:Update ] ,
+			[ rdfs:label "Use same version number as RDF::RDFa::Parser."@en ; a dcs:Update ]
+		] .
+
+my:v_0_22
+
+	a               :Version ;
+	dc:issued       "2009-12-03"^^xsd:date ;
+	:revision       "0.22"^^xsd:string ;
+	:file-release   <http://backpan.perl.org/authors/id/T/TO/TOBYINK/RDF-RDFa-Parser-Redland-0.22.tar.gz> .
+
+my:v_0_30
+
+	a               :Version ;
+	dc:issued       "2010-01-18"^^xsd:date ;
+	:revision       "0.30"^^xsd:string ;
+	:file-release   <http://backpan.perl.org/authors/id/T/TO/TOBYINK/RDF-RDFa-Parser-Redland-0.30.tar.gz> ;
+	dcs:changeset [
+		dcs:versus my:v_0_22 ;
+		dcs:item
+			[ rdfs:label "Sync code against RDF::RDFa::Parser."@en ; a dcs:Update ] ,
+			[ rdfs:label "Upgrade distribution to my new packaging regime (signatures, auto-generated changelogs, etc)"@en ; a dcs:Update ] ,
+			[ rdfs:label "Copyright 2010."@en ; a dcs:Update ] 
+	] .
+
+#############################################################
+
+my:project
+
+	a               :Project ;
+	:name           "RDF-RDFa-Parser-Redland" ;
+	:shortdesc      "Parses RDFa into a RDF::Redland::Model"@en ;
+	:programming-language  "Perl" ;
+	:homepage       <http://search.cpan.org/dist/RDF-RDFa-Parser-Redland/> ;
+	:download-page  <http://search.cpan.org/dist/RDF-RDFa-Parser-Redland/> ;
+	:bug-database   <http://rt.cpan.org/Dist/Display.html?Queue=RDF-RDFa-Parser-Redland> ;
+	:repository     [ a :SVNRepository ; :browse <http://goddamn.co.uk/viewvc/perlmods/RDF-RDFa-Parser-Redland/> ] ;
+	:maintainer     toby:i ;
+	:developer      toby:i ;
+	:documenter     toby:i ;
+	:tester         toby:i ;
+	:created        "2009-04-21"^^xsd:date ;
+	:license        <http://dev.perl.org/licenses/> ;
+	:release        my:v_0_01 , my:v_0_02 , my:v_0_21 , my:v_0_22 , my:v_0_30 .
+
+#############################################################
+
+toby:i
+
+	a               foaf:Person ;
+	foaf:name       "Toby Inkster" ;
+	foaf:homepage   <http://tobyinkster.co.uk/> ;
+	foaf:page       <http://search.cpan.org/~tobyink/> ;
+	foaf:mbox       <mailto:tobyink@cpan.org> .
+
+#############################################################

@@ -1,15 +1,37 @@
-use 5.006000;
-use ExtUtils::MakeMaker;
-# See lib/ExtUtils/MakeMaker.pm for details of how to influence
-# the contents of the Makefile that is written.
-WriteMakefile(
-    NAME              => 'RDF::RDFa::Parser::Redland',
-    VERSION_FROM      => 'lib/RDF/RDFa/Parser/Redland.pm', # finds $VERSION
-    PREREQ_PM         => {
-		'RDF::RDFa::Parser' => '0.11',
-		'RDF::Redland'      => 1,
-	},
-    ($] >= 5.005 ?     ## Add these new keywords supported since 5.005
-      (ABSTRACT_FROM  => 'lib/RDF/RDFa/Parser/Redland.pm', # retrieve abstract from module
-       AUTHOR         => 'Toby Inkster <mail@tobyinkster.co.uk>') : ()),
-);
+use strict;
+use warnings;
+
+use inc::Module::Install;
+
+my $dist = 'RDF-RDFa-Parser-Redland';
+my $fn   = "lib/$dist.pm"; $fn =~ s#-#/#g;
+
+name                $dist;
+perl_version_from   $fn;
+version_from        $fn;
+abstract_from       $fn;
+readme_from         $fn;
+author              'Toby Inkster <tobyink@cpan.org>';
+license             'perl';
+
+test_requires       'Test::More' => '0.61';
+
+requires            'RDF::RDFa::Parser' => '0.30';
+requires            'RDF::Redland'      => 0;
+
+resources(
+	'homepage'   => "http://search.cpan.org/dist/$dist/",
+	'repository' => "http://goddamn.co.uk/viewvc/perlmods/$dist/",
+	'bugtracker' => "http://rt.cpan.org/Dist/Display.html?Queue=$dist",
+	);
+
+write_doap_changes;
+write_doap_changes_xml;
+
+include 'Test::Signature';
+auto_install;
+WriteAll(
+	'meta' => 1,
+	'sign' => 1,
+	);
+
