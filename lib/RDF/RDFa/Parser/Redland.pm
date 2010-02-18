@@ -1,11 +1,15 @@
 package RDF::RDFa::Parser::Redland;
 
-use 5.008001;
+use 5.008;
 use strict;
+
+use Carp;
 use RDF::Redland;
-use RDF::RDFa::Parser '0.30';
-our @ISA = qw(RDF::RDFa::Parser);
-our $VERSION = '0.30';
+use RDF::RDFa::Parser 0.30;
+
+use base qw(RDF::RDFa::Parser);
+
+our $VERSION = '1.00';
 
 sub new
 {
@@ -27,7 +31,7 @@ sub new
 	$self->{'redland'} = $model;
 	$self->SUPER::set_callbacks({
 		pretriple_resource => \&redland_triple_resource ,	
-		pretriple_literal  => &redland_triple_literal ,
+		pretriple_literal  => \&redland_triple_literal ,
 		});
 
 	return $self;
@@ -40,26 +44,14 @@ sub set_callbacks
 	if ('HASH' eq ref $_[0])
 	{
 		$this->{'redland_sub'} = $_[0];
-		$this->{'redland_sub'}->{'pretriple_resource'} = \&_print0
+		$this->{'redland_sub'}->{'pretriple_resource'} = \&RDF::RDFa::Parser::_print0
 			if lc $this->{'redland_sub'}->{'pretriple_resource'}  eq 'print';
-		$this->{'redland_sub'}->{'pretriple_literal'} = \&_print1
+		$this->{'redland_sub'}->{'pretriple_literal'} = \&RDF::RDFa::Parser::_print1
 			if lc $this->{'redland_sub'}->{'pretriple_literal'}  eq 'print';
 	}
 	else
 	{
-		if (lc($_[0]) eq 'print')
-			{ $this->{'redland_sub'}->{'pretriple_resource'} = \&_print0; }
-		elsif ('CODE' eq ref $_[0])
-			{ $this->{'redland_sub'}->{'pretriple_resource'} = $_[0]; }
-		else
-			{ $this->{'redland_sub'}->{'pretriple_resource'} = undef; }
-
-		if (lc($_[1]) eq 'print')
-			{ $this->{'redland_sub'}->{'pretriple_literal'} = \&_print1; }
-		elsif ('CODE' eq ref $_[1])
-			{ $this->{'redland_sub'}->{'pretriple_literal'} = $_[1]; }
-		else
-			{ $this->{'redland_sub'}->{'pretriple_literal'} = undef; }
+		carp "Unsupported set_callbacks call.\n";
 	}
 	
 	return $this;
@@ -202,29 +194,26 @@ __END__
 
 =head1 NAME
 
-RDF::RDFa::Parser::Redland - Parses RDFa into a RDF::Redland::Model.
-
-=head1 VERSION
-
-0.30
+RDF::RDFa::Parser::Redland - flexible RDFa parser for Redland
 
 =head1 SYNOPSIS
 
-  use LWP::Simple qw(get);
-  use RDF::RDFa::Parser::Redland;
+ use RDF::RDFa::Parser::Redland;
+ 
+ my $parser = RDF::RDFa::Parser::Redland->new($xhtml, $uri)->consume;
+ my $model  = $parser->graph;
   
-  my $uri    = 'http://example.com/rdfa-enabled-page.xhtml';
-  my $parser = RDF::RDFa::Parser::Redland->new(get($uri), $uri);
-  $parser->consume;
-  my $model  = $parser->graph;
-  
+=head1 VERSION
+
+1.00
+
 =head1 DESCRIPTION
 
 This module extends RDF::RDFa::Parser to be able to output an
 RDF::Redland::Model.
 
-The C<graph> method will return a Redland model instead of the
-RDF::Trine::Model that C<RDF::RDFa::Parser::graph> returns.
+Redland models are used in place of RDF::Trine models. Redland
+statements are used in place of RDF::Trine statements.
 
 Other than that it should have an identical API to RDF::RDFa::Parser.
 
@@ -237,6 +226,8 @@ There seem to be one or two problems using the named graphs feature,
 but I've not had a chance to discover if the problems are in this package
 or in RDF::Redland (probably the former). The named graphs feature is
 only useful in a very small set of cases, and is disabled by default.
+
+There are almost certainly bugs using the Atom parsing feature.
 
 Please report any bugs to L<http://rt.cpan.org/>.
 

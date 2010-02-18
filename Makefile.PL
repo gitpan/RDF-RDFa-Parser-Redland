@@ -16,6 +16,7 @@ license             'perl';
 
 test_requires       'Test::More' => '0.61';
 
+requires            'Carp'              => 0;
 requires            'RDF::RDFa::Parser' => '0.30';
 requires            'RDF::Redland'      => 0;
 

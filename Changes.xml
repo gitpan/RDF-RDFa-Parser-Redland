@@ -17,7 +17,7 @@
   </rdf:Description>
   <Version rdf:about="http://search.cpan.org/dist/RDF-RDFa-Parser-Redland/#v_0_01">
     <dc:issued rdf:datatype="http://www.w3.org/2001/XMLSchema#date">2009-04-21</dc:issued>
-    <file-release rdf:resource="http://backpan.perl.org/authors/id/T/TO/TOBYINK/RDF-RDFa-Parser-Redland-0.01.tar.gz"/>
+    <file-release rdf:resource="http://backpan.cpan.org/authors/id/T/TO/TOBYINK/RDF-RDFa-Parser-Redland-0.01.tar.gz"/>
     <revision rdf:datatype="http://www.w3.org/2001/XMLSchema#string">0.01</revision>
     <rdfs:label xml:lang="en">Original version</rdfs:label>
   </Version>
@@ -33,7 +33,7 @@
       </rdf:Description>
     </dcs:changeset>
     <dc:issued rdf:datatype="http://www.w3.org/2001/XMLSchema#date">2009-04-21</dc:issued>
-    <file-release rdf:resource="http://backpan.perl.org/authors/id/T/TO/TOBYINK/RDF-RDFa-Parser-Redland-0.02.tar.gz"/>
+    <file-release rdf:resource="http://backpan.cpan.org/authors/id/T/TO/TOBYINK/RDF-RDFa-Parser-Redland-0.02.tar.gz"/>
     <revision rdf:datatype="http://www.w3.org/2001/XMLSchema#string">0.02</revision>
   </Version>
   <Version rdf:about="http://search.cpan.org/dist/RDF-RDFa-Parser-Redland/#v_0_21">
@@ -53,12 +53,12 @@
       </rdf:Description>
     </dcs:changeset>
     <dc:issued rdf:datatype="http://www.w3.org/2001/XMLSchema#date">2009-11-28</dc:issued>
-    <file-release rdf:resource="http://backpan.perl.org/authors/id/T/TO/TOBYINK/RDF-RDFa-Parser-Redland-0.21.tar.gz"/>
+    <file-release rdf:resource="http://backpan.cpan.org/authors/id/T/TO/TOBYINK/RDF-RDFa-Parser-Redland-0.21.tar.gz"/>
     <revision rdf:datatype="http://www.w3.org/2001/XMLSchema#string">0.21</revision>
   </Version>
   <Version rdf:about="http://search.cpan.org/dist/RDF-RDFa-Parser-Redland/#v_0_22">
     <dc:issued rdf:datatype="http://www.w3.org/2001/XMLSchema#date">2009-12-03</dc:issued>
-    <file-release rdf:resource="http://backpan.perl.org/authors/id/T/TO/TOBYINK/RDF-RDFa-Parser-Redland-0.22.tar.gz"/>
+    <file-release rdf:resource="http://backpan.cpan.org/authors/id/T/TO/TOBYINK/RDF-RDFa-Parser-Redland-0.22.tar.gz"/>
     <revision rdf:datatype="http://www.w3.org/2001/XMLSchema#string">0.22</revision>
   </Version>
   <Version rdf:about="http://search.cpan.org/dist/RDF-RDFa-Parser-Redland/#v_0_30">
@@ -83,8 +83,28 @@
       </rdf:Description>
     </dcs:changeset>
     <dc:issued rdf:datatype="http://www.w3.org/2001/XMLSchema#date">2010-01-18</dc:issued>
-    <file-release rdf:resource="http://backpan.perl.org/authors/id/T/TO/TOBYINK/RDF-RDFa-Parser-Redland-0.30.tar.gz"/>
+    <file-release rdf:resource="http://backpan.cpan.org/authors/id/T/TO/TOBYINK/RDF-RDFa-Parser-Redland-0.30.tar.gz"/>
     <revision rdf:datatype="http://www.w3.org/2001/XMLSchema#string">0.30</revision>
+  </Version>
+  <Version rdf:about="http://search.cpan.org/dist/RDF-RDFa-Parser-Redland/#v_1_00">
+    <dcs:changeset>
+      <rdf:Description>
+        <dcs:item>
+          <dcs:Update>
+            <rdfs:label xml:lang="en">RDF::RDFa::Parser and RDF::RDFa::Parser::Redland reach 1.00.</rdfs:label>
+          </dcs:Update>
+        </dcs:item>
+        <dcs:item>
+          <rdf:Description>
+            <rdfs:label xml:lang="en">Documentation improvements.</rdfs:label>
+          </rdf:Description>
+        </dcs:item>
+        <dcs:versus rdf:resource="http://search.cpan.org/dist/RDF-RDFa-Parser-Redland/#v_0_30"/>
+      </rdf:Description>
+    </dcs:changeset>
+    <dc:issued rdf:datatype="http://www.w3.org/2001/XMLSchema#date">2010-02-18</dc:issued>
+    <file-release rdf:resource="http://backpan.cpan.org/authors/id/T/TO/TOBYINK/RDF-RDFa-Parser-Redland-1.00.tar.gz"/>
+    <revision rdf:datatype="http://www.w3.org/2001/XMLSchema#string">1.00</revision>
   </Version>
   <Project rdf:about="http://search.cpan.org/dist/RDF-RDFa-Parser-Redland/#project">
     <bug-database rdf:resource="http://rt.cpan.org/Dist/Display.html?Queue=RDF-RDFa-Parser-Redland"/>
@@ -102,6 +122,7 @@
     <release rdf:resource="http://search.cpan.org/dist/RDF-RDFa-Parser-Redland/#v_0_21"/>
     <release rdf:resource="http://search.cpan.org/dist/RDF-RDFa-Parser-Redland/#v_0_22"/>
     <release rdf:resource="http://search.cpan.org/dist/RDF-RDFa-Parser-Redland/#v_0_30"/>
+    <release rdf:resource="http://search.cpan.org/dist/RDF-RDFa-Parser-Redland/#v_1_00"/>
     <repository>
       <SVNRepository>
         <browse rdf:resource="http://goddamn.co.uk/viewvc/perlmods/RDF-RDFa-Parser-Redland/"/>

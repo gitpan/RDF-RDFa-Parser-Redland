@@ -17,8 +17,8 @@ my $xhtml = <<EOF;
 	</body>
 </html>
 EOF
-$parser = RDF::RDFa::Parser::Redland->new($xhtml, 'http://example.com/einstein');
-$parser->named_graphs('http://example.com/graphing', 'graph');
+$parser = RDF::RDFa::Parser::Redland->new($xhtml, 'http://example.com/einstein',
+	{ graph_attr=>'{http://example.com/graphing}graph' , graph=>1 , graph_type=>'about' } );
 
 ok($parser->consume, "Parse OK");
 

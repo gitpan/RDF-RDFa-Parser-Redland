@@ -1,24 +1,21 @@
 NAME
-    RDF::RDFa::Parser::Redland - Parses RDFa into a RDF::Redland::Model.
-
-VERSION
-    0.30
+    RDF::RDFa::Parser::Redland - flexible RDFa parser for Redland
 
 SYNOPSIS
-      use LWP::Simple qw(get);
-      use RDF::RDFa::Parser::Redland;
-  
-      my $uri    = 'http://example.com/rdfa-enabled-page.xhtml';
-      my $parser = RDF::RDFa::Parser::Redland->new(get($uri), $uri);
-      $parser->consume;
-      my $model  = $parser->graph;
+     use RDF::RDFa::Parser::Redland;
+ 
+     my $parser = RDF::RDFa::Parser::Redland->new($xhtml, $uri)->consume;
+     my $model  = $parser->graph;
+
+VERSION
+    1.00
 
 DESCRIPTION
     This module extends RDF::RDFa::Parser to be able to output an
     RDF::Redland::Model.
 
-    The "graph" method will return a Redland model instead of the
-    RDF::Trine::Model that "RDF::RDFa::Parser::graph" returns.
+    Redland models are used in place of RDF::Trine models. Redland
+    statements are used in place of RDF::Trine statements.
 
     Other than that it should have an identical API to RDF::RDFa::Parser.
 
@@ -30,6 +27,8 @@ BUGS
     I've not had a chance to discover if the problems are in this package or
     in RDF::Redland (probably the former). The named graphs feature is only
     useful in a very small set of cases, and is disabled by default.
+
+    There are almost certainly bugs using the Atom parsing feature.
 
     Please report any bugs to <http://rt.cpan.org/>.
 

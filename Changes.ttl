@@ -25,7 +25,7 @@ my:v_0_01
 	a               :Version ;
 	dc:issued       "2009-04-21"^^xsd:date ;
 	:revision       "0.01"^^xsd:string ;
-	:file-release   <http://backpan.perl.org/authors/id/T/TO/TOBYINK/RDF-RDFa-Parser-Redland-0.01.tar.gz> ;
+	:file-release   <http://backpan.cpan.org/authors/id/T/TO/TOBYINK/RDF-RDFa-Parser-Redland-0.01.tar.gz> ;
 	rdfs:label      "Original version"@en .
 
 my:v_0_02
@@ -33,7 +33,7 @@ my:v_0_02
 	a               :Version ;
 	dc:issued       "2009-04-21"^^xsd:date ;
 	:revision       "0.02"^^xsd:string ;
-	:file-release   <http://backpan.perl.org/authors/id/T/TO/TOBYINK/RDF-RDFa-Parser-Redland-0.02.tar.gz> ;
+	:file-release   <http://backpan.cpan.org/authors/id/T/TO/TOBYINK/RDF-RDFa-Parser-Redland-0.02.tar.gz> ;
 	dcs:changeset [
 		dcs:versus my:v_0_01 ;
 		dcs:item
@@ -45,7 +45,7 @@ my:v_0_21
 	a               :Version ;
 	dc:issued       "2009-11-28"^^xsd:date ;
 	:revision       "0.21"^^xsd:string ;
-	:file-release   <http://backpan.perl.org/authors/id/T/TO/TOBYINK/RDF-RDFa-Parser-Redland-0.21.tar.gz> ;
+	:file-release   <http://backpan.cpan.org/authors/id/T/TO/TOBYINK/RDF-RDFa-Parser-Redland-0.21.tar.gz> ;
 	dcs:changeset [
 		dcs:versus my:v_0_02 ;
 		dcs:item
@@ -58,20 +58,33 @@ my:v_0_22
 	a               :Version ;
 	dc:issued       "2009-12-03"^^xsd:date ;
 	:revision       "0.22"^^xsd:string ;
-	:file-release   <http://backpan.perl.org/authors/id/T/TO/TOBYINK/RDF-RDFa-Parser-Redland-0.22.tar.gz> .
+	:file-release   <http://backpan.cpan.org/authors/id/T/TO/TOBYINK/RDF-RDFa-Parser-Redland-0.22.tar.gz> .
 
 my:v_0_30
 
 	a               :Version ;
 	dc:issued       "2010-01-18"^^xsd:date ;
 	:revision       "0.30"^^xsd:string ;
-	:file-release   <http://backpan.perl.org/authors/id/T/TO/TOBYINK/RDF-RDFa-Parser-Redland-0.30.tar.gz> ;
+	:file-release   <http://backpan.cpan.org/authors/id/T/TO/TOBYINK/RDF-RDFa-Parser-Redland-0.30.tar.gz> ;
 	dcs:changeset [
 		dcs:versus my:v_0_22 ;
 		dcs:item
 			[ rdfs:label "Sync code against RDF::RDFa::Parser."@en ; a dcs:Update ] ,
 			[ rdfs:label "Upgrade distribution to my new packaging regime (signatures, auto-generated changelogs, etc)"@en ; a dcs:Update ] ,
 			[ rdfs:label "Copyright 2010."@en ; a dcs:Update ] 
+	] .
+
+my:v_1_00
+
+	a               :Version ;
+	dc:issued       "2010-02-18"^^xsd:date ;
+	:revision       "1.00"^^xsd:string ;
+	:file-release   <http://backpan.cpan.org/authors/id/T/TO/TOBYINK/RDF-RDFa-Parser-Redland-1.00.tar.gz> ;
+	dcs:changeset [
+		dcs:versus my:v_0_30 ;
+		dcs:item
+			[ rdfs:label "RDF::RDFa::Parser and RDF::RDFa::Parser::Redland reach 1.00."@en ; a dcs:Update ] ,
+			[ rdfs:label "Documentation improvements."@en ]
 	] .
 
 #############################################################
@@ -92,7 +105,7 @@ my:project
 	:tester         toby:i ;
 	:created        "2009-04-21"^^xsd:date ;
 	:license        <http://dev.perl.org/licenses/> ;
-	:release        my:v_0_01 , my:v_0_02 , my:v_0_21 , my:v_0_22 , my:v_0_30 .
+	:release        my:v_0_01 , my:v_0_02 , my:v_0_21 , my:v_0_22 , my:v_0_30 , my:v_1_00 .
 
 #############################################################
 
